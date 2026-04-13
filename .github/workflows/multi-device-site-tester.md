@@ -96,7 +96,7 @@ Start frontend in background on documented frontend port (5137):
 ```bash
 cd ${{ github.workspace }}/frontend
 FRONTEND_PORT=5137
-# docs/build.md documents API on port 3000
+# API expected at http://127.0.0.1:3000 (repository default)
 VITE_API_URL=http://127.0.0.1:3000 npm run dev -- --host 0.0.0.0 --port "${FRONTEND_PORT}" > /tmp/frontend.log 2>&1 &
 echo $! > /tmp/frontend.pid
 ```
@@ -124,8 +124,12 @@ Detect bridge IP for Playwright:
 
 ```bash
 FRONTEND_PORT=5137
-ROUTE_PROBE_IP=1.1.1.1 # external probe target to detect local route/interface IP
+ROUTE_PROBE_IP=1.1.1.1
 SERVER_IP=$(ip -4 route get "${ROUTE_PROBE_IP}" 2>/dev/null | awk '{print $7; exit}')
+if [ -z "$SERVER_IP" ]; then
+  ROUTE_PROBE_IP=8.8.8.8
+  SERVER_IP=$(ip -4 route get "${ROUTE_PROBE_IP}" 2>/dev/null | awk '{print $7; exit}')
+fi
 if [ -z "$SERVER_IP" ]; then SERVER_IP=$(hostname -I | awk '{print $1}'); fi
 echo "Playwright URL: http://${SERVER_IP}:${FRONTEND_PORT}/"
 ```
