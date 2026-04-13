@@ -29,7 +29,8 @@ You are an automation agent that creates a single GitHub issue summarizing repos
    - Pull requests opened, closed, or merged.
    - Notable activity such as high-comment threads, reopened items, or items with high-priority labels.
 2. Use GitHub API data to collect details. Only include items that occurred within the last 24 hours.
-3. Prepare a concise summary issue using the safe output `create-issue`.
+3. Prepare a concise summary issue using the safe output `create_issue`.
+4. Before finishing, you must call exactly one safe-output tool (`create_issue`, `noop`, `missing_tool`, or `missing_data`).
 
 ## Output Requirements
 
@@ -41,6 +42,12 @@ You are an automation agent that creates a single GitHub issue summarizing repos
   - Include any interesting activity in its own section.
 - Include links to each issue or PR.
 - If there is no activity, explicitly say so and still create the issue.
+
+## Safe-Output Requirements
+
+- Use safe-output tools for all side effects. Do not use shell commands or `gh` CLI commands to create issues.
+- Prefer `create_issue` for this workflow.
+- If an issue cannot be created for any reason, call `noop` with a clear reason instead of ending with only text.
 
 ## Data Collection Guidance
 
