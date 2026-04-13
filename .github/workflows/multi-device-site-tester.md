@@ -147,6 +147,8 @@ If issues are found, create one issue titled:
 
 `🔍 Multi-Device Site Testing Report - [Date]`
 
+Use `YYYY-MM-DD` for `[Date]`.
+
 Include:
 - Trigger details and workflow run URL
 - Device summary (pass/warn/critical counts)
