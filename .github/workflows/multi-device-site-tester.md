@@ -2,7 +2,8 @@
 name: Multi-Device Site Tester
 description: Tests the OctoCAT website across multiple device form factors after running documented build steps.
 on:
-  schedule: weekly
+  schedule:
+    - cron: '0 9 * * 1'
   workflow_dispatch:
     inputs:
       devices:
@@ -48,8 +49,6 @@ network:
   allowed:
     - node
 ---
-
-{{#runtime-import? .github/shared-instructions.md}}
 
 # Multi-Device Website Testing
 

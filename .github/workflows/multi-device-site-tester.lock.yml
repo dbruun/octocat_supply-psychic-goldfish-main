@@ -21,13 +21,12 @@
 #
 # Tests the OctoCAT website across multiple device form factors after running documented build steps.
 #
-# frontmatter-hash: c36263cf54564a24de923b255f165bb84b80002f247a4f3024b8cad78175b0ba
+# frontmatter-hash: 7fd9bcabd87c8091595dd1c36758309f959296e88565bb3a3371d52cb65b0c50
 
 name: "Multi-Device Site Tester"
 "on":
   schedule:
-  - cron: "31 23 * * 3"
-    # Friendly format: weekly (scattered)
+  - cron: "0 9 * * 1"
   workflow_dispatch:
     inputs:
       devices:
