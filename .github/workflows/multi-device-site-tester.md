@@ -94,14 +94,16 @@ Start frontend in background on documented frontend port (5137):
 
 ```bash
 cd ${{ github.workspace }}/frontend
-VITE_API_URL=http://127.0.0.1:3000 npm run dev -- --host 0.0.0.0 --port 5137 > /tmp/frontend.log 2>&1 &
+FRONTEND_PORT=5137
+VITE_API_URL=http://127.0.0.1:3000 npm run dev -- --host 0.0.0.0 --port "${FRONTEND_PORT}" > /tmp/frontend.log 2>&1 &
 echo $! > /tmp/frontend.pid
 ```
 
 Wait until frontend is ready:
 
 ```bash
-curl --retry 30 --retry-delay 2 --retry-connrefused --fail http://127.0.0.1:5137
+FRONTEND_PORT=5137
+curl --retry 30 --retry-delay 2 --retry-connrefused --fail "http://127.0.0.1:${FRONTEND_PORT}"
 ```
 
 ## Step 2: Device matrix
@@ -119,14 +121,16 @@ Use Playwright MCP tools (not npm playwright) and test against the running websi
 Detect bridge IP for Playwright:
 
 ```bash
-SERVER_IP=$(ip -4 route get 1.1.1.1 2>/dev/null | awk '{print $7; exit}')
+FRONTEND_PORT=5137
+ROUTE_PROBE_IP=1.1.1.1
+SERVER_IP=$(ip -4 route get "${ROUTE_PROBE_IP}" 2>/dev/null | awk '{print $7; exit}')
 if [ -z "$SERVER_IP" ]; then SERVER_IP=$(hostname -I | awk '{print $1}'); fi
-echo "Playwright URL: http://${SERVER_IP}:5137/"
+echo "Playwright URL: http://${SERVER_IP}:${FRONTEND_PORT}/"
 ```
 
 For each viewport:
 - Set viewport size
-- Navigate to `http://${SERVER_IP}:5137/` using `waitUntil: 'domcontentloaded'`
+- Navigate to `http://${SERVER_IP}:${FRONTEND_PORT}/` using `waitUntil: 'domcontentloaded'`
 - Capture screenshot
 - Verify key layout checks (no major overflow/cutoff, navigation usable, primary content visible)
 - Record accessibility and interaction findings
