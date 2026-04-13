@@ -3,6 +3,7 @@ name: Multi-Device Site Tester
 description: Tests the OctoCAT website across multiple device form factors after running documented build steps.
 on:
   schedule:
+    # Weekly on Monday at 09:00 UTC
     - cron: '0 9 * * 1'
   workflow_dispatch:
     inputs:
@@ -95,6 +96,7 @@ Start frontend in background on documented frontend port (5137):
 ```bash
 cd ${{ github.workspace }}/frontend
 FRONTEND_PORT=5137
+# docs/build.md documents API on port 3000
 VITE_API_URL=http://127.0.0.1:3000 npm run dev -- --host 0.0.0.0 --port "${FRONTEND_PORT}" > /tmp/frontend.log 2>&1 &
 echo $! > /tmp/frontend.pid
 ```
@@ -122,7 +124,7 @@ Detect bridge IP for Playwright:
 
 ```bash
 FRONTEND_PORT=5137
-ROUTE_PROBE_IP=1.1.1.1
+ROUTE_PROBE_IP=1.1.1.1 # external probe target to detect local route/interface IP
 SERVER_IP=$(ip -4 route get "${ROUTE_PROBE_IP}" 2>/dev/null | awk '{print $7; exit}')
 if [ -z "$SERVER_IP" ]; then SERVER_IP=$(hostname -I | awk '{print $1}'); fi
 echo "Playwright URL: http://${SERVER_IP}:${FRONTEND_PORT}/"

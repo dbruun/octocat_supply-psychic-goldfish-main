@@ -21,7 +21,7 @@
 #
 # Tests the OctoCAT website across multiple device form factors after running documented build steps.
 #
-# frontmatter-hash: 7fd9bcabd87c8091595dd1c36758309f959296e88565bb3a3371d52cb65b0c50
+# frontmatter-hash: 780543c18fc7fd370870312cdb74e26988b50671acd516f0472148d6578b7ea6
 
 name: "Multi-Device Site Tester"
 "on":
