@@ -24,6 +24,7 @@ When generating suggestions:
 6. Encourage tests: request unit tests for new repository logic and component tests (or at least React Testing Library coverage) for critical UI paths.
 7. For performance concerns, highlight N+1 query patterns, unnecessary data loading, or large bundle additions.
 8. Prefer environment variable driven configuration; avoid hard‑coded paths/secrets.
+9. If I ask you to format markdown, assume I also want you to check the file for any plain text references to other files, and I want to convert that to a proper link
 
 ## Monorepo Workflow
 
