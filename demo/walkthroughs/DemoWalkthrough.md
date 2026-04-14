@@ -660,6 +660,163 @@ Application security has traditionally been a bottleneck: security reviews happe
 
 ---
 
+## GitHub Advanced Security (GHAS)
+
+> For the full standalone GHAS walkthrough with additional options and edge cases, see [`ghas.md`](ghas.md).
+
+### Talk Track — What Is GitHub Advanced Security?
+
+GitHub Advanced Security (GHAS) is the platform's native application security suite. Where the previous demo showed Copilot as an ad-hoc security partner, GHAS provides **continuous, automated security** that runs on every push, every PR, and across your entire Git history — without a developer needing to ask.
+
+**The three pillars of GHAS:**
+
+1. **Code Scanning (CodeQL)** — GitHub's semantic code analysis engine. Unlike pattern-matching linters, CodeQL treats your code as data — it builds a database of your codebase and runs queries against it to find vulnerabilities like SQL injection, XSS, path traversal, and more. CodeQL understands data flow, so it can trace user input from a request parameter through your application logic to a dangerous sink.
+
+2. **Secret Scanning** — Continuously monitors your repository (including the full Git history) for leaked credentials: API keys, tokens, passwords, certificates. It recognizes 200+ provider patterns (GitHub PATs, AWS keys, Slack tokens, etc.) and uses AI to detect generic secrets that don't match known patterns. **Push Protection** takes this further — it blocks pushes containing secrets *before* they reach the remote, preventing leaks instead of just detecting them.
+
+3. **Dependabot** — Monitors your dependency tree for known vulnerabilities (CVEs) and outdated packages. It generates alerts with EPSS scores, CWE classifications, and remediation guidance — and can automatically open PRs to bump vulnerable dependencies to safe versions. **Dependency Review** enforces policies on PRs, blocking merges that introduce dependencies with prohibited licenses or known vulnerabilities.
+
+**How GHAS and Copilot work together:**
+
+- **Copilot Autofix** — When CodeQL finds a vulnerability, Copilot generates a fix directly in the alert or PR. You don't need to understand the vulnerability class deeply — Copilot proposes the remediation inline.
+- **Assign alerts to the Coding Agent** — You can assign CodeQL alerts to the Copilot Coding Agent. It will open a PR with the fix, run tests, and iterate — no human coding required for routine remediations.
+- **Security Campaigns** — At the organization level, you can create campaigns that group related alerts and bulk-assign them to Copilot for remediation at scale.
+- **CCA + CodeQL** — The Coding Agent automatically runs CodeQL at the end of each coding session. If it introduces a vulnerability, it warns about it in its summary — and the CI scan catches it as a failed check.
+
+**The layered defense model:**
+
+| Layer | Tool | When |
+|---|---|---|
+| **IDE / Pre-commit** | Copilot Chat, MCP Secret Scanning | Before code leaves the developer's machine |
+| **Push** | Secret Scanning Push Protection | At `git push` time |
+| **PR** | CodeQL Autofix, Dependency Review | At pull request time |
+| **Branch** | CodeQL, Dependabot alerts | Continuous on default branch |
+| **Remediation** | Copilot Coding Agent, Security Campaigns | Async bulk and individual fixes |
+
+### Demo: Code Scanning with CodeQL
+
+- **What to show:** CodeQL detecting real vulnerabilities and Copilot Autofix generating fixes.
+- **Why:** Demonstrate the shift-left security model — vulnerabilities are caught and fixed in the developer workflow, not in a separate security review.
+
+> **Note:** Code Scanning runs in Default Setup natively. See the [full GHAS walkthrough](ghas.md#switch-to-advanced-codeql-setup) if you want to demo the advanced CodeQL setup.
+
+#### How — Existing Alerts on Main Branch
+
+1. Navigate to the repository's **Security** page → **Code Scanning**.
+2. Show the alerts. The guaranteed one is a SQL injection: `Database query built from user-controlled sources`.
+3. Click into the alert and show **Generate fix** — Copilot Autofix proposes a remediation inline.
+4. *(Optional)* Show how you can **Chat** about this vulnerability directly from the alert page.
+
+> **Note:** You may see additional alerts beyond the SQL injection. Use them if present, but don't rely on them — the demo codebase evolves and some may be fixed over time.
+
+#### How — PR Protection (Introduced Vulnerabilities)
+
+1. Navigate to **Pull Requests** and find the PR `Feature: Add ToS Download`.
+2. Show the Code Scanning results — you should see two alerts:
+   - **Uncontrolled data used in path expression** (a path traversal vulnerability — OWASP #1: Broken Access Control)
+   - **Missing rate limiting**
+3. Show how GHAS not only flags the vulnerability but Copilot Autofix already provides a fix inline in the PR.
+
+#### *(Optional)* How — Live-Code a Vulnerability
+
+1. Open Chat and enter `/code-injection` to run the code injection prompt.
+
+   > Sometimes a model will refuse since this is "bad" — try another model and show how "responsible" Copilot is.
+
+2. The prompt should create a new branch, modify a route to add a vulnerability, and push.
+3. Create a PR and show how GHAS alerts and suggests a fix inline.
+
+### Demo: Secret Scanning & Push Protection
+
+- **What to show:** Secret Scanning detecting leaked credentials in Git history and Push Protection blocking secrets before they reach the remote.
+- **Why:** Demonstrate that GHAS catches secrets across the full Git history — not just the current branch — and prevents new leaks proactively.
+
+#### How — Existing Leaked Secrets
+
+1. Navigate to **Security** → **Secret scanning**.
+2. Show the alerts:
+   - **Default: GitHub PAT** — Leaked in `api/.env.example` (later removed, but Secret Scanning found it in Git history)
+   - **Generic: AI Detected Password** — Also in `api/.env.example`, detected by AI as a generic secret
+   - **Generic: RSA Token** — Leaked in `api/ca.key`, a non-provider pattern secret
+
+#### How — Push Protection Live Demo
+
+1. Apply the Patch Set **GHAS: Inject Secrets**.
+2. This creates `logs/debug.log` containing a leaked Anthropic API key.
+3. Commit the file.
+4. Open a terminal and run:
+
+   ```sh
+   git push
+   ```
+
+5. Show Push Protection blocking the push — it identifies the secret type and prevents it from reaching the remote.
+6. *(Optional)* Navigate to the bypass URL in the push protection message to demo the bypass workflow.
+
+#### *(Optional)* How — Pre-Commit Scanning via MCP
+
+1. Apply the Patch Set **GHAS: Inject Secrets** (if not already applied).
+2. With the GitHub MCP Server running, open Copilot Chat in **Agent** mode and prompt:
+
+   ```txt
+   Scan all current changes for exposed secrets and show me the files and lines I should update before I commit
+   ```
+
+3. Copilot invokes MCP secret scanning and returns the file, line number, and secret type — catching the leak *before* commit.
+
+### Demo: Dependabot — Vulnerable Dependencies & License Compliance
+
+- **What to show:** Dependabot alerting on known CVEs in dependencies and Dependency Review blocking PRs with prohibited licenses.
+- **Why:** Demonstrate supply chain security — vulnerabilities don't just come from your code, they come from your dependencies.
+
+#### How — Existing Vulnerability Alerts
+
+1. Navigate to **Security** → **Dependabot**.
+2. Show the guaranteed alerts:
+   - **Axios v1.8.1** in [`frontend/package.json`](../../frontend/package.json) — contains [CVE-2025-27152](https://github.com/advisories/GHSA-jr5f-v2jv-69x6). Show the EPSS score, CWE, and remediation guidance.
+   - **Dockerfile Alpine** in [`frontend/Dockerfile`](../../frontend/Dockerfile) and [`api/Dockerfile`](../../api/Dockerfile) — outdated Alpine version. Dependabot opens a PR with the update.
+
+> **Note:** You may see additional dependency vulnerabilities naturally — use them to your advantage ("this is like a real project").
+
+#### How — License Violation (Dependency Review)
+
+1. Find the PR `feature: Add download of terms and services`.
+2. Show that the **Dependency Review** required workflow failed.
+3. Explain: the PR adds `ua-parser-js`, which is licensed under **AGPL-3.0** — a strong copyleft license that's explicitly denied by the Dependency Review policy. This prevents teams from accidentally introducing license-incompatible dependencies.
+
+#### *(Optional)* How — Vulnerable Action Demo
+
+1. Apply the Patch Set **GHAS: Inject Dependabot Vulnerable Action** (select "Yes" for creating a new branch).
+2. Commit the created workflow file and create a PR.
+3. Show two things:
+   - Dependabot created an alert for `tj-actions/branch-names@v8.2.0` ([CVE-2025-54416](https://github.com/advisories/GHSA-gq52-6phf-x2r6))
+   - The Action was blocked by the Actions Allow List (show in **Settings** → **Actions** → **General**)
+
+### Demo: Assigning CodeQL Alerts to the Copilot Coding Agent
+
+- **What to show:** Assigning security alerts directly to Copilot for automated remediation.
+- **Why:** Demonstrate that GHAS + Copilot can remediate vulnerabilities at scale without manual developer intervention.
+
+#### How — Assign from Alert Page
+
+1. Navigate to **Security** → **Code scanning alerts**.
+2. Find the alert `Database query built from user-controlled sources`.
+3. Click **Generate Autofix** (required before assigning Copilot).
+4. Assign **Copilot** from the assignee list.
+5. Navigate to the linked PR or check progress from **Copilot Mission Control**.
+
+> **Tip:** Generate the autofix before your demo to save time — Copilot can only be assigned to alerts with a generated autofix.
+
+#### *(Optional)* How — CCA Runs CodeQL Automatically
+
+1. Show any Copilot Coding Agent session from Mission Control.
+2. Search for "CodeQL" in the session to show that the agent automatically runs CodeQL at the end of each session.
+3. Explain: even if the agent doesn't fix a finding itself, it warns about it in the summary — and the CI CodeQL scan catches it as a failed check on the PR.
+
+> **Key Takeaway:** GHAS provides continuous, automated security across code, secrets, and dependencies — and with Copilot integration, remediation scales from individual fixes to organization-wide campaigns.
+
+---
+
 ## Demo: Automating Deployment with GitHub Actions, Azure and Bicep
 
 - **What to show:** Copilot generating Actions workflows and Infrastructure-as-Code.
