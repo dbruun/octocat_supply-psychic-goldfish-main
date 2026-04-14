@@ -114,6 +114,247 @@
 
 > **Key Takeaway:** Copilot saves time on the mundane parts of the workflow — commit messages, PR descriptions, changelogs — so you can focus on the code.
 
+---
+
+## Demo: GitHub CLI (`gh`) — Your Command-Line Hub
+
+- **What to show:** The GitHub CLI as a powerful interface for managing repos, issues, pull requests, Actions runs, and Copilot — all from the terminal.
+- **Why:** Many developers live in the terminal. The GitHub CLI brings the full GitHub workflow to the command line, reducing context switches to the browser.
+
+### Prerequisites
+
+1. Install the GitHub CLI if not already available:
+
+   ```sh
+   winget install GitHub.cli
+   ```
+
+2. Authenticate:
+
+   ```sh
+   gh auth login
+   ```
+
+3. Verify authentication status:
+
+   ```sh
+   gh auth status
+   ```
+
+### How — Repository Operations
+
+1. Show the current repo's details from the project root:
+
+   ```sh
+   gh repo view
+   ```
+
+2. Show that you can open the repo in the browser instantly:
+
+   ```sh
+   gh repo view --web
+   ```
+
+3. *(Optional)* Clone another repo to demonstrate discovery:
+
+   ```sh
+   gh repo clone <owner>/<repo>
+   ```
+
+### How — Issues
+
+1. List open issues for the current repo:
+
+   ```sh
+   gh issue list
+   ```
+
+2. Create a new issue interactively:
+
+   ```sh
+   gh issue create --title "Add stock quantity to Product model" --body "Track inventory levels per product."
+   ```
+
+3. View a specific issue (replace `<number>` with the issue number from the previous step):
+
+   ```sh
+   gh issue view <number>
+   ```
+
+4. *(Optional)* Close the issue:
+
+   ```sh
+   gh issue close <number>
+   ```
+
+### How — Pull Requests
+
+1. List open pull requests:
+
+   ```sh
+   gh pr list
+   ```
+
+2. Create a pull request from the current branch (make sure you have a branch with changes pushed):
+
+   ```sh
+   gh pr create --fill
+   ```
+
+   > `--fill` auto-populates the title and body from commit messages.
+
+3. View PR details and checks:
+
+   ```sh
+   gh pr view <number>
+   ```
+
+4. Check out a teammate's PR locally for review:
+
+   ```sh
+   gh pr checkout <number>
+   ```
+
+### How — GitHub Actions
+
+1. List recent workflow runs:
+
+   ```sh
+   gh run list
+   ```
+
+2. View details of a specific run (replace `<run-id>` with an ID from the list):
+
+   ```sh
+   gh run view <run-id>
+   ```
+
+3. *(Optional)* Re-run a failed workflow:
+
+   ```sh
+   gh run rerun <run-id>
+   ```
+
+### How — Copilot in the CLI
+
+1. Install the Copilot CLI extension (one-time setup):
+
+   ```sh
+   gh extension install github/gh-copilot
+   ```
+
+2. Ask Copilot to explain a command:
+
+   ```sh
+   gh copilot explain "git rebase -i HEAD~3"
+   ```
+
+3. Ask Copilot to suggest a command for a task:
+
+   ```sh
+   gh copilot suggest "find all Java files modified in the last 7 days"
+   ```
+
+4. Show that Copilot suggests the right shell command and lets you copy, execute, or revise it.
+5. *(Optional)* Ask Copilot a general programming question:
+
+   ```sh
+   gh copilot explain "what is the difference between JPA @OneToMany and @ManyToMany"
+   ```
+
+### How — Copilot Coding Agent (CCA) from the CLI
+
+1. Create an issue that describes a feature request:
+
+   ```sh
+   gh issue create --title "Add a healthcheck endpoint to the API" \
+     --body "Add a GET /api/health endpoint that returns 200 OK with a JSON body containing the app version and database connectivity status."
+   ```
+
+2. Assign the Copilot Coding Agent to the issue (replace `<number>` with the issue number):
+
+   ```sh
+   gh issue edit <number> --add-assignee @me
+   gh issue edit <number> --add-assignee "copilot"
+   ```
+
+   > **Note:** Assigning `copilot` triggers the Coding Agent to pick up the issue and start a session automatically.
+
+3. Watch the Coding Agent session start — check the issue in the browser:
+
+   ```sh
+   gh issue view <number> --web
+   ```
+
+4. Monitor the agent's progress by listing Copilot Coding Agent sessions:
+
+   ```sh
+   gh copilot-workspace list
+   ```
+
+   > If the `copilot-workspace` extension is not available, monitor via the issue timeline in the browser.
+
+5. Once the agent opens a PR, view it from the terminal:
+
+   ```sh
+   gh pr list --author "copilot[bot]"
+   ```
+
+6. Check out the agent's PR locally and review the changes:
+
+   ```sh
+   gh pr checkout <pr-number>
+   gh pr diff <pr-number>
+   ```
+
+7. *(Optional)* Add a review comment to steer the agent — it will pick up feedback and iterate:
+
+   ```sh
+   gh pr review <pr-number> --comment --body "Please also add a unit test for the healthcheck endpoint."
+   ```
+
+8. Once satisfied, approve and merge:
+
+   ```sh
+   gh pr review <pr-number> --approve
+   gh pr merge <pr-number> --squash --delete-branch
+   ```
+
+### How — End-to-End CLI Workflow (Issue → CCA → Merge)
+
+> This ties together Issues, Copilot Coding Agent, and PRs in a single terminal-driven flow.
+
+1. Create the issue and assign Copilot in one shot:
+
+   ```sh
+   gh issue create \
+     --title "Add pagination to the Products endpoint" \
+     --body "Support page and size query params on GET /api/products. Default to page=0, size=20." \
+     --assignee "copilot"
+   ```
+
+2. Explain that the Coding Agent is now working asynchronously — you can continue other work.
+3. After the agent opens a PR, review the diff:
+
+   ```sh
+   gh pr list --author "copilot[bot]"
+   gh pr diff <pr-number>
+   ```
+
+4. Run the CI checks and confirm they pass:
+
+   ```sh
+   gh pr checks <pr-number>
+   ```
+
+5. Merge when ready:
+
+   ```sh
+   gh pr merge <pr-number> --squash --delete-branch
+   ```
+
+> **Key Takeaway:** The GitHub CLI brings repos, issues, PRs, Actions, Copilot, and even the Coding Agent into a single terminal tool — letting you drive the entire development lifecycle without leaving the command line.
+
 <br><br>
 
 ---
@@ -131,6 +372,24 @@
 # General Copilot Features
 
 ## Demo: Enhancing Unit Tests and Coverage
+
+### Talk Track — Copilot and Testing
+
+Testing is one of the areas where Copilot delivers the most immediate ROI. Writing tests is essential but often tedious — developers know they need them, but the effort of scaffolding test classes, mocking dependencies, and covering edge cases slows them down. Copilot changes that dynamic in two ways:
+
+**Agent-driven testing** — You can point Copilot at an existing route or service and ask it to run the test suite, analyze coverage gaps, and generate the missing tests. Copilot will:
+- Execute the tests and read the output
+- Identify untested branches, error paths, and edge cases
+- Generate new test methods that follow the existing test conventions (same assertion library, same naming patterns, same setup/teardown structure)
+- Re-run the tests to verify they pass — and if they don't, self-heal by reading the failure output and fixing the code
+
+**Self-healing loop** — This is a key concept: Copilot doesn't just generate tests and walk away. In Agent mode, it runs the tests, reads failures, diagnoses the issue, and iterates — the same red-green-refactor cycle a developer would follow, but automated.
+
+**What makes Copilot-generated tests good:**
+- They follow existing patterns in your test suite (Copilot reads your other test files for conventions)
+- They cover both happy paths and error scenarios (404s, validation failures, edge cases)
+- They use realistic test data that makes sense in the domain
+- Custom instructions and skills can further guide test structure (e.g., "always test with and without authentication")
 
 ### Option 1: Using Coding Agent
 
@@ -152,6 +411,29 @@
 
 - **What to show:** "Vibe coding" using Agent Mode and Vision to complete complex tasks, plus demonstrate custom prompt efficiency.
 - **Why:** Demonstrate how Copilot Vision can detect design patterns, how Agent can understand a codebase and create complex changes over multiple files, and how custom prompts can streamline complex demos.
+
+### Talk Track — Agent Mode, Vision, and Custom Prompts
+
+This demo brings together three powerful Copilot capabilities:
+
+**Agent Mode** is Copilot's most autonomous mode. Unlike Ask mode (which answers questions) or Edit mode (which makes targeted changes), Agent mode can:
+- Read and analyze multiple files across the codebase
+- Create new files and modify existing ones
+- Run terminal commands (build, test, lint)
+- Iterate on failures — if a build breaks or a test fails, it reads the output and fixes the issue
+- Make multi-file, multi-step changes in a single conversation
+
+Think of it as having a junior developer who can read your entire project, follow your patterns, and implement a feature end-to-end.
+
+**Copilot Vision** adds the ability to attach images (mockups, screenshots, whiteboard photos) to a chat. Copilot analyzes the visual content and uses it as context — it can detect UI layouts, component structures, color schemes, and design patterns from an image and translate them into code.
+
+**Custom Prompts** (`.github/prompts/*.prompt.md`) are reusable, parameterized prompt templates that you commit to your repo. They:
+- Encapsulate complex multi-step workflows into a single command (e.g., `/demo-cart-page`)
+- Configure which Copilot mode and tools to use via YAML frontmatter
+- Ensure consistency — every team member gets the same high-quality output
+- Can include variables, tool configurations, and detailed instructions that would be tedious to type every time
+
+Together, these three features enable "vibe coding" — describing what you want in natural language (optionally with a visual reference) and letting Copilot handle the implementation details.
 
 ### Option 2: Manual Chat (For deeper explanation)
 
@@ -185,6 +467,47 @@
 
 - **What to show:** Copilot's Custom Instructions feature using the existing [`.github/copilot-instructions.md`](../../.github/copilot-instructions.md) configuration.
 - **Why:** Demonstrate that Copilot can be customized and personalized for internal libraries, coding standards, and team practices that don't exist in the foundational models.
+
+### Talk Track — What Are Custom Instructions?
+
+Custom instructions are markdown files you commit to your repository that tell Copilot **how your team works**. Without them, Copilot only knows what's in its training data. With them, you can teach Copilot about your internal libraries, naming conventions, architectural decisions, and review standards — things no public model could know.
+
+**There are two levels of custom instructions:**
+
+1. **Repository-wide instructions** — A single file at `.github/copilot-instructions.md` that applies to every Copilot interaction in the repo. This is where you put:
+   - High-level architecture descriptions (e.g., "this is a Spring Boot API + React frontend")
+   - General review guidance and coding standards
+   - Build and testing commands
+   - Escalation priorities (security first, then correctness, then performance, etc.)
+   - References to deeper docs rather than restating them
+
+2. **Path-scoped instructions** — Individual files in `.github/instructions/` with YAML frontmatter that targets specific file paths. Each file has:
+   - A `description` field explaining its purpose
+   - An `applyTo` glob pattern that controls **when** the instructions activate (e.g., `api/src/**/*.java` for backend code, `frontend/src/**` for UI code)
+   - Focused guidance that only kicks in when you're working in matching files
+
+   For example, this repo has three path-scoped files:
+   - [`api.instructions.md`](../../.github/instructions/api.instructions.md) — applies to API source, migrations, and seeds
+   - [`frontend.instructions.md`](../../.github/instructions/frontend.instructions.md) — applies to React/Vite/Tailwind files
+   - [`database.instructions.md`](../../.github/instructions/database.instructions.md) — applies to migration and seed files
+
+**How to format them:**
+
+- The repo-wide file is plain markdown — headings, bullets, code blocks. Write it like you're onboarding a new developer.
+- Path-scoped files start with YAML frontmatter between `---` fences:
+
+  ```yaml
+  ---
+  description: "Guidance for editing and reviewing API code changes."
+  applyTo: "api/src/**/*.java, database/migrations/**"
+  ---
+  ```
+
+- Keep instructions **concise and actionable** — Copilot reads them as context, so bloated files waste the context window.
+- **Link to docs** instead of restating them (e.g., "see `docs/architecture.md`" rather than pasting the architecture inline).
+- Use an **escalation order** so Copilot prioritizes the right things: security → correctness → performance → maintainability → style.
+
+> **Tip:** These files are version-controlled, so your entire team benefits — and they evolve with the codebase just like any other code.
 
 ### How
 
@@ -224,6 +547,62 @@
 - **What to show:** Copilot's ability to review code for specific web accessibility guidelines using the Web Interface Guidelines agent skill.
 - **Why:** Demonstrate that Copilot can be used to enforce best practices and guidelines, such as web accessibility standards using 3p agent skills, an open standard for custom instructions.
 
+### Talk Track — What Are Agent Skills?
+
+Agent skills are the next step beyond custom instructions. Where instructions tell Copilot **how to behave**, skills teach Copilot **how to do specific jobs**. Think of them as reusable playbooks — complete with step-by-step workflows, code templates, and domain expertise — that Copilot follows when a matching task comes up.
+
+**How skills differ from instructions:**
+
+| | Custom Instructions | Agent Skills |
+|---|---|---|
+| **Purpose** | General guidance and coding standards | Task-specific workflows and patterns |
+| **Scope** | Always active (repo-wide) or file-path-scoped | Triggered when a matching task is detected |
+| **Depth** | Concise rules and priorities | Detailed multi-step playbooks with code templates |
+| **Location** | `.github/copilot-instructions.md` or `.github/instructions/` | `.github/skills/<skill-name>/SKILL.md` |
+
+**The anatomy of a skill:**
+
+Each skill lives in its own folder under `.github/skills/` and contains a `SKILL.md` file with:
+
+1. **YAML frontmatter** — metadata that tells Copilot when to activate:
+
+   ```yaml
+   ---
+   name: api-endpoint
+   description: Generate REST API endpoints following established patterns.
+     Use this skill when creating new CRUD endpoints, adding routes,
+     implementing JPA repositories, or defining entity models with Swagger documentation.
+   ---
+   ```
+
+   - `name` — a short identifier for the skill
+   - `description` — a natural language trigger: Copilot matches your request against this text to decide whether to load the skill
+
+2. **Workflow steps** — a structured guide Copilot follows, typically including:
+   - When to use the skill (trigger conditions)
+   - Step-by-step instructions (e.g., "Step 1: Define the Entity Model", "Step 2: Create the Repository")
+   - Code templates and patterns to follow
+   - File paths and naming conventions
+   - Validation checks and testing guidance
+
+**Where skills come from:**
+
+- **Build your own** — Create a `.github/skills/<name>/SKILL.md` file for your team's patterns. This repo has an [`api-endpoint`](../../.github/skills/api-endpoint/SKILL.md) skill that codifies how to add new REST endpoints following the Spring Boot + JPA patterns used in this project.
+- **Install third-party skills** — The community publishes skills you can add with a single command:
+
+  ```sh
+  npx skills add <owner>/<repo> --skill <skill-name> -a github-copilot
+  ```
+
+- **User-level skills** — Skills can also be installed globally (outside the repo) so they're available across all your projects via your VS Code settings. These are useful for personal productivity patterns or cross-cutting concerns like accessibility reviews.
+
+**Key design principles for writing skills:**
+
+- **Be specific in the description** — Copilot uses the description to decide when to activate the skill, so include concrete trigger phrases (e.g., "creating new CRUD endpoints", "adding routes").
+- **Include real code templates** — Don't just describe the pattern; show the actual code Copilot should generate, using your project's actual packages, naming, and structure.
+- **Keep it scoped** — One skill per concern. Don't pack API patterns, testing guidance, and deployment steps into a single skill.
+- **Reference, don't duplicate** — If your skill needs context from other files (like architecture docs), tell Copilot to read them rather than copying content into the skill.
+
 ### How
 
 1. In the terminal, run the following command to add the Web Interface Guidelines skill to the repository:
@@ -248,6 +627,24 @@
 - **What to show:** Copilot's ability to understand and remediate security vulnerabilities.
 - **Why:** Demonstrate that Copilot can be used to scale AppSec by bringing security expertise to Developers directly.
 
+### Talk Track — Copilot as a Security Partner
+
+Application security has traditionally been a bottleneck: security reviews happen late in the cycle, findings pile up in backlogs, and developers often lack the specialized knowledge to fix vulnerabilities correctly. Copilot shifts security left by bringing AppSec expertise directly into the developer's workflow.
+
+**What Copilot can do for security:**
+
+- **Vulnerability detection** — Ask Copilot to analyze your codebase (using `@workspace`) and it will identify common vulnerability classes: XSS, injection, insecure CORS, missing headers, broken authentication, and more. It references the actual files and lines where the issues exist.
+- **Contextual remediation** — Copilot doesn't just flag problems; it generates fixes that fit your codebase's patterns. It understands your middleware stack, error handling conventions, and framework idioms, so the fix integrates cleanly.
+- **Education in context** — When a developer asks "why is this a problem?", Copilot explains the attack vector, the potential impact, and the defense — right next to the vulnerable code. This builds security literacy over time.
+- **Issue creation** — With the GitHub MCP Server, Copilot can create tracked issues for vulnerabilities it finds, ensuring nothing falls through the cracks.
+
+**What Copilot is NOT:**
+- It's not a replacement for SAST/DAST tools, penetration testing, or security audits
+- It may miss complex, multi-step vulnerabilities that require deep application logic understanding
+- It should be used as a complement to GitHub Advanced Security (CodeQL, Dependabot, secret scanning), not a substitute
+
+**The value proposition:** Every developer gets an AppSec-aware pair programmer — no waiting for the security team's review cycle.
+
 ### How
 
 1. Open Copilot Chat and switch to **Ask** mode.
@@ -268,6 +665,64 @@
 - **What to show:** Copilot generating Actions workflows and Infrastructure-as-Code.
 - **Why:** Show Copilot's ability to automate CI/CD workflows.
 
+### Talk Track — What Are GitHub Actions?
+
+GitHub Actions is GitHub's built-in CI/CD and automation platform. It lets you define workflows — automated pipelines — that run in response to events in your repository: pushes, pull requests, issue creation, scheduled timers, manual triggers, and more. Everything lives in your repo as code, so your automation is versioned, reviewed, and deployed alongside the application it supports.
+
+**Core concepts:**
+
+1. **Workflows** — YAML files in `.github/workflows/` that define an automation pipeline. Each workflow has:
+   - A **trigger** (`on:`) — the event(s) that start it (e.g., `push`, `pull_request`, `schedule`, `workflow_dispatch` for manual runs)
+   - One or more **jobs** — independent units of work that run on a runner (GitHub-hosted or self-hosted)
+   - **Steps** within each job — individual commands or actions to execute in sequence
+
+   ```yaml
+   name: CI
+   on:
+     push:
+       branches: [main]
+     pull_request:
+       branches: [main]
+
+   jobs:
+     build:
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@v4
+         - name: Build
+           run: make build
+         - name: Test
+           run: make test
+   ```
+
+2. **Actions** — Reusable building blocks you plug into steps with `uses:`. They come from:
+   - **GitHub's official actions** — `actions/checkout`, `actions/setup-java`, `actions/upload-artifact`
+   - **The Marketplace** — thousands of community and vendor actions for deployment, notifications, security scanning, etc.
+   - **Your own repo** — custom actions in `.github/actions/` for team-specific logic
+
+3. **Environments** — Named deployment targets (e.g., `staging`, `production`) with:
+   - **Protection rules** — required reviewers, wait timers, branch restrictions
+   - **Secrets and variables** — scoped to the environment so production credentials are isolated from dev
+
+4. **Secrets and variables** — Encrypted values (`secrets.MY_SECRET`) and plain config (`vars.MY_VAR`) stored at the repo, environment, or organization level. Never hard-code credentials in workflow files.
+
+**What this repo already has:**
+
+This project includes several workflows in [`.github/workflows/`](../../.github/workflows/):
+- [`ci.yml`](../../.github/workflows/ci.yml) — continuous integration (build + test on push/PR)
+- [`build-and-publish.yml`](../../.github/workflows/build-and-publish.yml) — build and publish artifacts
+- [`deploy.yml`](../../.github/workflows/deploy.yml) — deployment pipeline
+- [`codeql-advanced.yml`](../../.github/workflows/codeql-advanced.yml) — GitHub Advanced Security code scanning
+- [`copilot-setup-steps.yml`](../../.github/workflows/copilot-setup-steps.yml) — setup steps for the Copilot Coding Agent
+
+**Key design principles for workflows:**
+
+- **Keep workflows focused** — one workflow per concern (CI, deploy, security scan). Don't pack everything into a single giant file.
+- **Use reusable workflows and composite actions** — extract shared logic into `workflow_call` workflows or composite actions to avoid duplication across repos.
+- **Pin action versions** — use full SHA or major version tags (`actions/checkout@v4`) rather than `@main` to prevent supply chain attacks.
+- **Use environments with protection rules** — require approval before deploying to production; never auto-deploy to prod from a PR.
+- **Store secrets properly** — use repository or environment secrets, never commit tokens or keys to workflow files.
+
 ### How
 
 1. Ensure that you have run the `configure-deployment.sh` script to set up the initial infrastructure and configure the environments and vars in the repo.
@@ -283,6 +738,35 @@
 ---
 
 ## Demo: Planning Mode in VS Code
+
+### Talk Track — What Is Planning Mode?
+
+Copilot Chat has several modes, each suited to different tasks. Planning Mode sits between "asking questions" and "making changes" — it's designed for **thinking before doing**.
+
+**The Copilot Chat modes progression:**
+
+| Mode | Purpose | Actions |
+|---|---|---|
+| **Ask** | Learn and explore | Answers questions, explains code, no file changes |
+| **Plan** | Design and strategize | Analyzes the codebase, asks clarifying questions, produces a structured plan |
+| **Edit** | Targeted changes | Makes specific edits to selected files |
+| **Agent** | Autonomous implementation | Reads/writes files, runs commands, iterates on failures |
+
+**Why Plan Mode matters:**
+
+- **Prevents premature implementation** — Instead of jumping straight into code generation, Plan Mode forces a discovery phase. Copilot explores the codebase, identifies affected files, and asks questions before proposing changes.
+- **Captures requirements** — Copilot will ask clarifying questions (e.g., "should the cart persist across sessions?" or "do you want a separate Cart model or inline state?"). This surfaces decisions early, before code is written.
+- **Creates a shareable artifact** — The plan can be exported to a markdown file and shared with teammates, used as a spec, or handed off to the Coding Agent for async implementation.
+- **Bridges to implementation** — From a plan, you can either start implementation immediately in Agent Mode or hand it off to the Copilot Coding Agent via a custom prompt.
+
+**When to use Plan Mode:**
+
+- Feature planning where scope isn't fully defined
+- Architectural discussions ("how should I structure this?")
+- Pre-work before handing off to the Coding Agent
+- Cross-team handoffs where the plan serves as documentation
+
+### How
 
 1. Open the demo repository in VS Code.
 2. Open Copilot Chat and switch to **Plan** Mode.
@@ -318,6 +802,34 @@
 <br><br>
 
 # Copilot Coding Agent & Mission Control
+
+### Talk Track — What Is the Copilot Coding Agent?
+
+The Copilot Coding Agent (CCA) is GitHub Copilot's fully autonomous coding backend. Unlike Copilot in the IDE — where you interact in real-time — the Coding Agent works **asynchronously** on GitHub's infrastructure. You assign it a task (via an issue), and it works independently: reading the codebase, writing code, running tests, and opening a pull request when it's done.
+
+**How it works:**
+
+1. **Trigger** — Assign the `copilot` user to a GitHub issue, or use a custom prompt to hand off work.
+2. **Environment** — The agent spins up a secure, sandboxed cloud environment with your repo cloned. It uses the [`copilot-setup-steps.yml`](../../.github/workflows/copilot-setup-steps.yml) workflow to configure the environment (install dependencies, set up databases, etc.).
+3. **Execution** — The agent reads the issue description, explores the codebase, plans its approach, writes code, runs builds and tests, and iterates on failures — all autonomously.
+4. **Output** — It opens a pull request with its changes. You review the PR like any other — and if you leave review comments, the agent picks them up and iterates.
+
+**When to use the Coding Agent vs. Agent Mode in the IDE:**
+
+| | Agent Mode (IDE) | Coding Agent (Async) |
+|---|---|---|
+| **Interaction** | Real-time, conversational | Async — assign and walk away |
+| **Where it runs** | Your local machine | GitHub's cloud infrastructure |
+| **Best for** | Exploratory work, quick changes, learning | Well-scoped features, backlog items, overnight tasks |
+| **Feedback loop** | Immediate (you see every step) | PR-based (review when ready) |
+| **Context** | Your open files + conversation | Full repo + issue description |
+
+**Key concepts:**
+
+- **Setup steps** — The [`copilot-setup-steps.yml`](../../.github/workflows/copilot-setup-steps.yml) workflow tells the agent how to set up the dev environment. This is critical — if the agent can't build and test, it can't iterate.
+- **MCP integration** — The GitHub MCP Server lets IDE-based Copilot create issues and assign them to the Coding Agent programmatically.
+- **Model selection** — When viewing an issue assigned to the agent, you can choose which model backs the session (e.g., Claude Code, Codex, or the default).
+- **Handoff patterns** — Custom prompts like `/handoff` and `/handoff-to-copilot-coding-agent` provide structured ways to transfer context from an IDE planning session to the async agent.
 
 ## Copilot Coding Agent
 
@@ -516,6 +1028,40 @@ Skills are defined in `.github/skills/` or `.claude/skills/` directories and con
 
 
 # GitHub Agentic Workflows Demo
+
+### Talk Track — What Are Agentic Workflows?
+
+Agentic Workflows are a new category of GitHub Actions workflows where the "runner" isn't a script — it's an AI agent. Instead of writing imperative YAML steps (`run: npm test`, `uses: actions/deploy`), you write **natural language instructions** that an AI agent interprets and executes autonomously.
+
+**How they differ from traditional Actions workflows:**
+
+| | Traditional Workflows | Agentic Workflows |
+|---|---|---|
+| **Instructions** | Imperative YAML steps | Natural language markdown |
+| **Execution** | Deterministic — same steps every time | Adaptive — the agent decides how to accomplish the goal |
+| **Error handling** | Explicit `if: failure()` conditions | The agent reads errors and adapts its approach |
+| **Maintenance** | Update YAML when tools/APIs change | Instructions stay stable; the agent adapts to changes |
+| **Output** | Logs, artifacts, deployments | Issues, PR reviews, reports — plus traditional outputs |
+
+**How they work:**
+
+1. **Trigger** — Agentic workflows use the same event triggers as traditional workflows (`push`, `pull_request`, `schedule`, `workflow_dispatch`).
+2. **Markdown instructions** — Instead of YAML steps, you provide a markdown file (in `.github/workflows/`) that describes what the agent should accomplish, what format the output should follow, and any constraints.
+3. **Safe outputs** — A `safe-outputs` section in the workflow YAML constrains what the agent can do (e.g., "create at most 1 issue with this title prefix"). This is a critical safety guardrail — it prevents runaway agents from flooding your repo with issues or making unintended changes.
+4. **Execution** — The agent reads your instructions, explores the repo, gathers data (using GitHub APIs, reading files, running commands), and produces the specified output.
+
+**The three patterns this demo covers:**
+
+- **Creation from scratch** (Demo 1) — Using the Coding Agent to author a new agentic workflow from a natural language prompt
+- **Scheduled reporting** (Demo 2) — An agent that runs daily to summarize repo activity and create a structured issue
+- **PR quality gates** (Demo 3) — An agent that reviews pull requests for documentation and test coverage, posting review comments and optionally blocking merges
+
+**Key safety considerations:**
+
+- Always use `safe-outputs` to scope what the agent can create/modify
+- Use `max:` limits to prevent runaway execution
+- Review generated workflows before merging — the agent writes natural language instructions, but you own the guardrails
+- Agentic workflows have the same permissions model as traditional workflows (`permissions:` key in YAML)
 
 ## Demo 1: Create a New Workflow from Scratch
 
