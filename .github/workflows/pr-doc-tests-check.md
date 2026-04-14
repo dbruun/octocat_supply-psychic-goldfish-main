@@ -8,7 +8,8 @@ description: |
 on:
   pull_request:
     types: [opened, synchronize]
-    paths: ['api/src/routes/deliveryVehicle.ts']
+    paths: ['api/src/main/java/com/octodemo/octocatsupply/**']
+  workflow_dispatch:
 
 #features:
 #  copilot-requests: true
