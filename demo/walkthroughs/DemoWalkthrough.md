@@ -355,6 +355,147 @@
 
 > **Key Takeaway:** The GitHub CLI brings repos, issues, PRs, Actions, Copilot, and even the Coding Agent into a single terminal tool — letting you drive the entire development lifecycle without leaving the command line.
 
+---
+
+## Demo: Bring Your Own Key (BYOK) — Using Any Model with Copilot
+
+- **What to show:** GitHub Copilot isn't locked to a single model — organizations can bring their own API keys to use models from Azure OpenAI, Anthropic, Google, and other providers.
+- **Why:** This is a common enterprise concern: "What if I need a specific model for compliance, cost, or capability reasons?" BYOK removes vendor lock-in as a blocker for Copilot adoption.
+
+### Talk Track — BYOK and Model Flexibility
+
+One of the most frequent questions from engineering leadership is: _"What if the default model doesn't meet our needs?"_ Maybe you need a model hosted in a specific Azure region for data residency, or you want to use a fine-tuned model, or your team simply prefers a different provider. GitHub Copilot addresses this with **Bring Your Own Key (BYOK)**.
+
+**What BYOK means in practice:**
+
+- **Organization-level model configuration** — Admins can configure alternative model endpoints in GitHub Copilot settings at the org or enterprise level. Developers don't need to change anything in their workflow — the model swap is transparent.
+- **Azure OpenAI Service integration** — Connect your own Azure OpenAI deployment. This gives you full control over the model version, region, data processing boundaries, and content filtering policies. Ideal for regulated industries.
+- **Multiple model providers** — Copilot Chat in VS Code and on GitHub.com supports model selection. Developers can switch between models (GPT-4o, Claude, Gemini, and others) directly from the model picker dropdown — no configuration needed for the built-in options.
+- **Custom endpoints** — For organizations with self-hosted or fine-tuned models, you can point Copilot at a custom API endpoint that follows the OpenAI-compatible API contract.
+
+**Why this matters for enterprise adoption:**
+
+| Concern | How BYOK Addresses It |
+|---------|----------------------|
+| Data residency / sovereignty | Use Azure OpenAI in your preferred region |
+| Model performance for your domain | Bring a fine-tuned model optimized for your stack |
+| Cost control | Use your own Azure commitment / reserved capacity |
+| Compliance & audit | All traffic flows through your own Azure tenant with your policies |
+| Vendor lock-in | Swap models without changing developer workflows |
+
+### How
+
+#### Part 1: Show Built-in Model Switching (VS Code — 2 min)
+
+1. Open **Copilot Chat** in VS Code.
+2. At the bottom of the chat panel, click the **model picker dropdown** — the button shows the current model name (e.g., `GPT-4.1`).
+3. Walk through the list. Point out the breadth of providers: **OpenAI** (GPT-4.1, GPT-5.2, GPT-5.4), **Anthropic** (Claude Sonnet 4.6, Claude Opus 4.6), **Google** (Gemini 2.5 Pro, Gemini 3.1 Pro), **xAI** (Grok Code Fast 1).
+4. Select a different model (e.g., switch from GPT-4.1 to Claude Sonnet 4.6).
+5. Ask the same question in chat — show that `@workspace` context, tool access, and agent capabilities all work identically regardless of model.
+6. *(Optional)* Mention **premium request multipliers** — some models cost more premium requests per interaction (e.g., Claude Opus 4.6 = 3x, GPT-4.1 = 0x/free).
+
+> **Point to make:** Developers can switch models with a single click, mid-conversation, without any configuration. This is zero-setup model flexibility.
+
+#### Part 2: Show Organization-Level Model Policies (GitHub.com — 3 min)
+
+1. Navigate to your org on **GitHub.com**.
+2. Go to **Settings → Copilot → Policies**.
+3. Show the **Editor preview models** and **Copilot Chat models** policy toggles — admins can enable or restrict which models are available to all developers in the org.
+4. Point out that when a model is disabled at the org level, it disappears from every developer's model picker automatically — no per-user configuration needed.
+5. *(Optional)* If you have an Enterprise account, mention that enterprise owners can set policies that cascade down to all organizations.
+
+> **Point to make:** IT and security teams get centralized control. One toggle removes a model from every developer's IDE across the entire organization.
+
+#### Part 3: Add a Custom Model via BYOK (GitHub.com — 5 min)
+
+This is the core BYOK demo. You'll add an API key from an external LLM provider so that a custom model appears in every org member's model picker.
+
+**Supported providers:** Anthropic, AWS Bedrock, Google AI Studio, Microsoft Foundry, OpenAI, OpenAI-compatible providers, xAI.
+
+**Pre-requisite:** Have an API key ready from one of the supported providers (e.g., an Anthropic API key, an Azure OpenAI / Microsoft Foundry deployment URL + key, or an OpenAI API key).
+
+**Steps:**
+
+1. Navigate to your org on **GitHub.com**.
+2. Go to **Settings → Copilot → Models**.
+3. Click the **Custom models** tab.
+4. Click **Add API key**.
+5. Under **Provider**, select your LLM provider (e.g., `Anthropic`, `Microsoft Foundry`, `OpenAI`).
+6. Under **Name**, type a display name — this is what developers will see in the model picker (e.g., `Contoso Internal GPT`).
+7. Under **API key**, paste your key.
+8. **Select or add models:**
+   - **For OpenAI / Anthropic / xAI:** Click the **Fetch new models** button next to the API key field. Copilot will query your provider and list all available models. Check the ones you want to make available.
+   - **For Microsoft Foundry:** Enter your **Deployment URL**, then type a **Model ID** and click **Add model**. If your models have different deployment URLs, create a separate API key for each.
+   - **For OpenAI-compatible providers:** Enter your base URL and model identifiers manually.
+9. Click **Save**.
+10. **Verify in VS Code:** Open Copilot Chat, click the model picker. Scroll to the bottom — your custom model appears under a section labeled with your **organization name**. Select it and submit a prompt to confirm it works.
+
+> **Point to make:** The entire setup is 10 clicks. Once saved, the custom model is instantly available in the model picker for every developer in the org — no VS Code settings, no `.env` files, no local configuration.
+
+#### Part 4: Talk Track — Why Enterprises Use BYOK *(no live demo needed)*
+
+Wrap up with the business context:
+
+- **Governance & compliance** — Use providers that meet your regulatory requirements (SOC 2, HIPAA, FedRAMP). Route all traffic through your own Azure tenant.
+- **Cost management** — Leverage existing contracts, committed Azure spend, or negotiated enterprise rates instead of consuming premium requests.
+- **Visibility** — Monitor usage through your provider's dashboards and billing, alongside GitHub's usage metrics.
+- **Specialization** — Bring fine-tuned models optimized for your domain, internal APIs, or proprietary frameworks. Fine-tuned models are supported but results vary — test before rolling out.
+- **Data residency** — With Microsoft Foundry or Azure OpenAI, you choose the region and control where data is processed.
+
+> **Key Takeaway:** Copilot is a platform, not a single model. Organizations keep full control over which models power their development experience — swap providers, enforce compliance, and optimize costs without changing a single developer workflow.
+
+---
+
+## Demo: Planning Mode in VS Code
+
+### Talk Track — What Is Planning Mode?
+
+Copilot Chat has several modes, each suited to different tasks. Planning Mode sits between "asking questions" and "making changes" — it's designed for **thinking before doing**.
+
+**The Copilot Chat modes progression:**
+
+| Mode | Purpose | Actions |
+|---|---|---|
+| **Ask** | Learn and explore | Answers questions, explains code, no file changes |
+| **Plan** | Design and strategize | Analyzes the codebase, asks clarifying questions, produces a structured plan |
+| **Edit** | Targeted changes | Makes specific edits to selected files |
+| **Agent** | Autonomous implementation | Reads/writes files, runs commands, iterates on failures |
+
+**Why Plan Mode matters:**
+
+- **Prevents premature implementation** — Instead of jumping straight into code generation, Plan Mode forces a discovery phase. Copilot explores the codebase, identifies affected files, and asks questions before proposing changes.
+- **Captures requirements** — Copilot will ask clarifying questions (e.g., "should the cart persist across sessions?" or "do you want a separate Cart model or inline state?"). This surfaces decisions early, before code is written.
+- **Creates a shareable artifact** — The plan can be exported to a markdown file and shared with teammates, used as a spec, or handed off to the Coding Agent for async implementation.
+- **Bridges to implementation** — From a plan, you can either start implementation immediately in Agent Mode or hand it off to the Copilot Coding Agent via a custom prompt.
+
+**When to use Plan Mode:**
+
+- Feature planning where scope isn't fully defined
+- Architectural discussions ("how should I structure this?")
+- Pre-work before handing off to the Coding Agent
+- Cross-team handoffs where the plan serves as documentation
+
+### How
+
+1. Open the demo repository in VS Code.
+2. Open Copilot Chat and switch to **Plan** Mode.
+3. Use the following prompt to kick off a planning session:
+
+   ```txt
+   I need to implement a cart feature in this application. Help me plan that.
+   ```
+
+4. Copilot will first retrieve some information and then come back with some questions. *(CAUTION: They might not be exactly the same each time, so get creative.)*
+5. Answer the questions accordingly. Copilot might come back with more questions. You can decide whether to keep answering them or, at some point, turn the plan into action.
+6. Choose one of the following actions:
+   - **Start Implementation** — to have Agent Mode implement the plan right away.
+   - **Open in Editor** — to store the plan in a markdown file.
+7. Switch to **Agent** Mode and prompt Copilot to hand this over to the Coding Agent *(requires MCP to be started)*:
+
+   ```txt
+   Can you hand this plan over to coding agent?
+   ```
+
 <br><br>
 
 ---
@@ -882,6 +1023,8 @@ This project includes several workflows in [`.github/workflows/`](../../.github/
 
 ### How
 
+#### Option A: Traditional Workflow — Deployment Pipeline with Copilot
+
 1. Ensure that you have run the `configure-deployment.sh` script to set up the initial infrastructure and configure the environments and vars in the repo.
 2. Add the [`deployment.md`](../../docs/deployment.md) file as context.
 3. Prompt Copilot Agent to generate bicep files and workflows according to the deployment plan.
@@ -892,59 +1035,140 @@ This project includes several workflows in [`.github/workflows/`](../../.github/
 6. Commit and push to see the pipeline execution.
 7. Show the deployment.
 
----
+#### Option B: Agentic Workflow — Markdown-Driven Workflows
 
-## Demo: Planning Mode in VS Code
+Agentic workflows replace imperative YAML steps with **natural language markdown instructions** that an AI agent interprets and executes autonomously. Instead of scripting every step, you describe *what* you want and the agent figures out *how*.
 
-### Talk Track — What Is Planning Mode?
+**How the file structure works:**
 
-Copilot Chat has several modes, each suited to different tasks. Planning Mode sits between "asking questions" and "making changes" — it's designed for **thinking before doing**.
+| File | Purpose |
+|------|---------|
+| `.github/workflows/my-workflow.md` | The **source** — frontmatter config + natural language instructions |
+| `.github/workflows/my-workflow.lock.yml` | The **compiled output** — actual Actions YAML that GitHub runs |
 
-**The Copilot Chat modes progression:**
+This repo already has three agentic workflows:
+- [`daily-repo-activity-summary.md`](../../.github/workflows/daily-repo-activity-summary.md) — scheduled daily repo report
+- [`pr-doc-tests-check.md`](../../.github/workflows/pr-doc-tests-check.md) — PR quality gate for docs + tests
+- [`auto-analyze-failures.md`](../../.github/workflows/auto-analyze-failures.md) — auto-triage failed workflow runs
 
-| Mode | Purpose | Actions |
-|---|---|---|
-| **Ask** | Learn and explore | Answers questions, explains code, no file changes |
-| **Plan** | Design and strategize | Analyzes the codebase, asks clarifying questions, produces a structured plan |
-| **Edit** | Targeted changes | Makes specific edits to selected files |
-| **Agent** | Autonomous implementation | Reads/writes files, runs commands, iterates on failures |
+**Step 1: Create a new agentic workflow**
 
-**Why Plan Mode matters:**
+Use the `gh aw` CLI to scaffold a new workflow:
 
-- **Prevents premature implementation** — Instead of jumping straight into code generation, Plan Mode forces a discovery phase. Copilot explores the codebase, identifies affected files, and asks questions before proposing changes.
-- **Captures requirements** — Copilot will ask clarifying questions (e.g., "should the cart persist across sessions?" or "do you want a separate Cart model or inline state?"). This surfaces decisions early, before code is written.
-- **Creates a shareable artifact** — The plan can be exported to a markdown file and shared with teammates, used as a spec, or handed off to the Coding Agent for async implementation.
-- **Bridges to implementation** — From a plan, you can either start implementation immediately in Agent Mode or hand it off to the Copilot Coding Agent via a custom prompt.
+```sh
+# Interactive wizard — walks you through triggers, permissions, tools
+gh aw new --interactive
 
-**When to use Plan Mode:**
+# Or create from a template directly
+gh aw new my-workflow
+```
 
-- Feature planning where scope isn't fully defined
-- Architectural discussions ("how should I structure this?")
-- Pre-work before handing off to the Coding Agent
-- Cross-team handoffs where the plan serves as documentation
+This creates `.github/workflows/my-workflow.md` with commented examples of all available options.
 
-### How
+**Step 2: Edit the markdown file**
 
-1. Open the demo repository in VS Code.
-2. Open Copilot Chat and switch to **Plan** Mode.
-3. Use the following prompt to kick off a planning session:
+The file has two parts:
 
-   ```txt
-   I need to implement a cart feature in this application. Help me plan that.
+1. **YAML frontmatter** — defines triggers, permissions, tools, and safety constraints:
+
+   ```yaml
+   ---
+   name: My Custom Workflow
+   description: Does something useful
+   on:
+     schedule: daily
+     workflow_dispatch:
+   permissions:
+     contents: read
+     issues: read
+   tools:
+     github:
+       toolsets: [repos, issues, pull_requests]
+   safe-outputs:
+     create-issue:
+       title-prefix: "[my-workflow] "
+       max: 1
+   network: {}
+   ---
    ```
 
-4. Copilot will first retrieve some information and then come back with some questions. *(CAUTION: They might not be exactly the same each time, so get creative.)*
-5. Answer the questions accordingly. Copilot might come back with more questions. You can decide whether to keep answering them or, at some point, turn the plan into action.
-6. Choose one of the following actions:
-   - **Start Implementation** — to have Agent Mode implement the plan right away.
-   - **Open in Editor** — to store the plan in a markdown file.
-7. Switch to **Agent** Mode and prompt Copilot to hand this over to the Coding Agent *(requires MCP to be started)*:
+2. **Markdown body** — natural language instructions for the agent:
 
-   ```txt
-   Can you hand this plan over to coding agent?
+   ```markdown
+   # My Custom Workflow
+
+   You are an automation agent that [describes the task].
+
+   ## Task
+   1. Do this first...
+   2. Then do this...
+
+   ## Output Requirements
+   - Format the output like this...
+   - Include links to relevant items...
    ```
 
-<br><br>
+**Step 3: Compile to YAML**
+
+The markdown file isn't directly runnable by GitHub Actions — you need to compile it:
+
+```sh
+# Compile all .md workflows in .github/workflows/
+gh aw compile
+
+# Compile a specific workflow
+gh aw compile my-workflow
+
+# Watch mode — auto-recompile on save (useful during development)
+gh aw compile --watch my-workflow
+
+# Validate without generating files
+gh aw compile --no-emit
+
+# Compile with security scanning
+gh aw compile --actionlint --zizmor
+```
+
+This generates `.github/workflows/my-workflow.lock.yml` — the actual Actions YAML that GitHub will execute.
+
+**Step 4: Commit both files**
+
+Both the `.md` source and the `.lock.yml` compiled output must be committed and pushed:
+
+```sh
+git add .github/workflows/my-workflow.md .github/workflows/my-workflow.lock.yml
+git commit -m "Add my-workflow agentic workflow"
+git push
+```
+
+**Step 5: Run and verify**
+
+```sh
+# Trigger a manual run
+gh aw run my-workflow
+
+# Check status
+gh aw status
+
+# View logs after completion
+gh aw logs my-workflow
+
+# If something fails, audit the run
+gh aw audit <run-id>
+```
+
+**Key frontmatter options to highlight:**
+
+| Option | Purpose | Example |
+|--------|---------|---------|
+| `on:` | Event triggers | `schedule: daily`, `pull_request:`, `workflow_dispatch:` |
+| `permissions:` | GitHub token scopes | `contents: read`, `issues: write` |
+| `tools:` | What the agent can use | `github:`, `bash: true`, MCP servers |
+| `safe-outputs:` | Constrain agent side effects | `create-issue: { max: 1 }` |
+| `network:` | Network access controls | `{}` for no external access, `allowed: [defaults]` |
+| `concurrency:` | Prevent parallel runs | `group:`, `cancel-in-progress:` |
+
+> **Key Takeaway:** Agentic workflows let you author CI/CD automation in natural language. The `gh aw` CLI handles scaffolding (`new`), compilation (`compile`), execution (`run`), and debugging (`audit`) — the full lifecycle without touching raw YAML.
 
 ---
 

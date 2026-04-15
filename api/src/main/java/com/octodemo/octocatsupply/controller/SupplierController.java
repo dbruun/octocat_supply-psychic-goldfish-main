@@ -34,6 +34,7 @@ public class SupplierController {
 		
 		return ResponseEntity.ok(supplier);
 	}
+	
 
 	@PostMapping
 	@Operation(summary = "Create a new supplier")
