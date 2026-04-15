@@ -683,6 +683,94 @@ Custom instructions are markdown files you commit to your repository that tell C
 
 ---
 
+# GitHub Copilot Skills Demo
+
+> This walkthrough demonstrates how to use Agent Skills to generate high-quality, consistent code that follows specific instructions, formats or tools.
+
+### What are Skills?
+
+Agent Skills are folders of instructions, scripts, and resources that GitHub Copilot can load when relevant to perform specialized tasks. Skills are an open standard that works across multiple AI agents, including GitHub Copilot in VS Code, GitHub Copilot CLI, and GitHub Copilot coding agent.
+
+**Key benefits of Agent Skills:**
+
+- **Specialize Copilot:** Tailor capabilities for domain-specific tasks without repeating context
+- **Reduce repetition:** Create once, use automatically across all conversations
+- **Compose capabilities:** Combine multiple skills to build complex workflows
+- **Efficient loading:** Only relevant content loads into context when needed
+- **Portable:** Works across VS Code, Copilot CLI, and Copilot coding agent
+
+### Skill Structure
+
+Skills are defined in `.github/skills/` or `.claude/skills/` directories and contain:
+
+- **`SKILL.md`** — The skill definition with YAML frontmatter (name, description) and detailed instructions
+- **Additional resources** — Scripts, examples, templates, and reference documentation
+
+---
+
+## Demo: Using the `api-endpoint` Skill to Add a New Entity
+
+- **Why:**
+  - **Consistency:** New developers (or AI assistants) need specialized knowledge to produce high-quality results. Skills encode institutional knowledge so that code generation is consistent and bespoke.
+  - **Reduced Review Overhead:** When code generation follows established patterns, reviewers can focus on business logic rather than style/convention fixes.
+  - **Faster Onboarding:** New team members can use Skills to understand how things are done in your codebase.
+  - **Scalability:** As the codebase grows, Skills ensure consistency, producing higher-quality results and making the codebase easier to maintain.
+
+- **What to Show:**
+  - **The Skill Definition:** Show the `api-endpoint` skill structure and explain how it encodes a specific technical skill (in this case, creating an API endpoint)
+  - **Natural Language Prompt:** Demonstrate using a simple prompt to generate a complete, production-ready API endpoint
+  - **Generated Artifacts:** Show all the files Copilot creates (model, repository, routes, migration, seed data, tests)
+  - **Pattern Adherence:** Highlight how the generated code follows the exact same patterns as existing code
+
+### How
+
+#### Part 1: Explore the Skill
+
+1. Enable the `chat.useAgentSkills` setting in VS Code to use Agent Skills.
+2. Open the [`.github/skills/api-endpoint/SKILL.md`](../../.github/skills/api-endpoint/SKILL.md) file.
+3. Walk through the key sections:
+   - **Architecture Overview:** Shows the layered architecture (Routes → Repository → Database)
+   - **When to Use This Skill:** Trigger conditions for the skill
+   - **Workflow Steps:** Step-by-step guide for creating models, repositories, routes, migrations, and seed data
+   - **Patterns and Examples:** Concrete code patterns for each component
+4. *(Optional)* Show the `references/database-conventions.md` file to demonstrate how supporting documentation is included.
+
+#### Part 2: Generate the DeliveryVehicle Entity
+
+1. Open Copilot Chat and switch to **Agent** mode.
+2. Enter the following prompt:
+
+   ```txt
+   Add a new API endpoint for a new Entity called 'DeliveryVehicle'. Vehicles belong to branches.
+   ```
+
+3. Watch as Copilot:
+   - Analyzes the existing codebase structure
+   - References the `api-endpoint` skill automatically
+   - Generates all required components following the established patterns:
+     - **Model:** Generates the model using conventions
+     - **Repository:** Generates the Repository with CRUD operations
+     - **Routes:** Generates the route with full REST endpoints
+     - **Migration:** Creates DB migrations
+     - **Seed Data:** Creates seed data
+     - **Tests:** Creates and runs unit tests for the new endpoint
+4. Review the generated code and highlight:
+   - **Naming Conventions:** Follows naming conventions for entities/methods
+   - **Foreign Key Relationship:** The `branchId` field linking to the branches table
+   - **API Documentation:** Complete OpenAPI annotations for all endpoints
+   - **Error Handling:** Consistent use of custom errors
+   - **SQL Utilities:** Using specified utils
+   - **Unit Tests:** Created and verified unit tests
+
+#### Part 3: Verify the Implementation
+
+1. Accept the changes.
+2. Run build/unit tests.
+3. Open the Swagger UI at `http://localhost:3000/api-docs` and show the new DeliveryVehicle endpoints.
+4. *(Optional)* Test the CRUD operations using the Swagger UI.
+
+---
+
 ## Demo: Review Files for Compliance with 3p Web Interface Guidelines Using Agent Skills
 
 - **What to show:** Copilot's ability to review code for specific web accessibility guidelines using the Web Interface Guidelines agent skill.
@@ -1291,107 +1379,6 @@ The Copilot Coding Agent (CCA) is GitHub Copilot's fully autonomous coding backe
 11. **Best Practices:** Explain that custom prompts are valuable for:
     - Codifying repetitive parts of existing workflows
     - Improving the discoverability of available Copilot use cases
-
-<br><br>
-
----
-
-```
-============================================================
-  NEXT MAJOR DEMO BLOCK — ADD NEW CONTENT BELOW
-============================================================
-```
-
----
-
-<br><br>
-
-
-GitHub Copilot Skills Demo
-
-> This walkthrough demonstrates how to use Agent Skills to generate high-quality, consistent code that follows specific instructions, formats or tools.
-
-### What are Skills?
-
-Agent Skills are folders of instructions, scripts, and resources that GitHub Copilot can load when relevant to perform specialized tasks. Skills are an open standard that works across multiple AI agents, including GitHub Copilot in VS Code, GitHub Copilot CLI, and GitHub Copilot coding agent.
-
-**Key benefits of Agent Skills:**
-
-- **Specialize Copilot:** Tailor capabilities for domain-specific tasks without repeating context
-- **Reduce repetition:** Create once, use automatically across all conversations
-- **Compose capabilities:** Combine multiple skills to build complex workflows
-- **Efficient loading:** Only relevant content loads into context when needed
-- **Portable:** Works across VS Code, Copilot CLI, and Copilot coding agent
-
-### Skill Structure
-
-Skills are defined in `.github/skills/` or `.claude/skills/` directories and contain:
-
-- **`SKILL.md`** — The skill definition with YAML frontmatter (name, description) and detailed instructions
-- **Additional resources** — Scripts, examples, templates, and reference documentation
-
----
-
-## Demo: Using the `api-endpoint` Skill to Add a New Entity
-
-- **Why:**
-  - **Consistency:** New developers (or AI assistants) need specialized knowledge to produce high-quality results. Skills encode institutional knowledge so that code generation is consistent and bespoke.
-  - **Reduced Review Overhead:** When code generation follows established patterns, reviewers can focus on business logic rather than style/convention fixes.
-  - **Faster Onboarding:** New team members can use Skills to understand how things are done in your codebase.
-  - **Scalability:** As the codebase grows, Skills ensure consistency, producing higher-quality results and making the codebase easier to maintain.
-
-- **What to Show:**
-  - **The Skill Definition:** Show the `api-endpoint` skill structure and explain how it encodes a specific technical skill (in this case, creating an API endpoint)
-  - **Natural Language Prompt:** Demonstrate using a simple prompt to generate a complete, production-ready API endpoint
-  - **Generated Artifacts:** Show all the files Copilot creates (model, repository, routes, migration, seed data, tests)
-  - **Pattern Adherence:** Highlight how the generated code follows the exact same patterns as existing code
-
-### How
-
-#### Part 1: Explore the Skill
-
-1. Enable the `chat.useAgentSkills` setting in VS Code to use Agent Skills.
-2. Open the [`.github/skills/api-endpoint/SKILL.md`](../../.github/skills/api-endpoint/SKILL.md) file.
-3. Walk through the key sections:
-   - **Architecture Overview:** Shows the layered architecture (Routes → Repository → Database)
-   - **When to Use This Skill:** Trigger conditions for the skill
-   - **Workflow Steps:** Step-by-step guide for creating models, repositories, routes, migrations, and seed data
-   - **Patterns and Examples:** Concrete code patterns for each component
-4. *(Optional)* Show the `references/database-conventions.md` file to demonstrate how supporting documentation is included.
-
-#### Part 2: Generate the DeliveryVehicle Entity
-
-1. Open Copilot Chat and switch to **Agent** mode.
-2. Enter the following prompt:
-
-   ```txt
-   Add a new API endpoint for a new Entity called 'DeliveryVehicle'. Vehicles belong to branches.
-   ```
-
-3. Watch as Copilot:
-   - Analyzes the existing codebase structure
-   - References the `api-endpoint` skill automatically
-   - Generates all required components following the established patterns:
-     - **Model:** Generates the model using conventions
-     - **Repository:** Generates the Repository with CRUD operations
-     - **Routes:** Generates the route with full REST endpoints
-     - **Migration:** Creates DB migrations
-     - **Seed Data:** Creates seed data
-     - **Tests:** Creates and runs unit tests for the new endpoint
-4. Review the generated code and highlight:
-   - **Naming Conventions:** Follows naming conventions for entities/methods
-   - **Foreign Key Relationship:** The `branchId` field linking to the branches table
-   - **API Documentation:** Complete OpenAPI annotations for all endpoints
-   - **Error Handling:** Consistent use of custom errors
-   - **SQL Utilities:** Using specified utils
-   - **Unit Tests:** Created and verified unit tests
-
-#### Part 3: Verify the Implementation
-
-1. Accept the changes.
-2. Run build/unit tests.
-3. Open the Swagger UI at `http://localhost:3000/api-docs` and show the new DeliveryVehicle endpoints.
-4. *(Optional)* Test the CRUD operations using the Swagger UI.
 
 <br><br>
 
