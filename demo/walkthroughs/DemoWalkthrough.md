@@ -1550,3 +1550,82 @@ Agentic Workflows are a new category of GitHub Actions workflows where the "runn
    - **Review verdict:** `REQUEST_CHANGES` (blocks merge depending on the rules defined in the rulesets)
 
 > **Key Takeaway:** Agentic workflows can act as intelligent, context-aware code reviewers that enforce documentation and testing standards automatically on every PR.
+
+---
+
+## Demo 4: Multi-Repo Orchestration with Copilot Agent Skills
+
+- **What to show:** Copilot Coding Agent skills that coordinate work **across multiple repositories** — a platform repo creates issues in child repos, assigns Copilot to each, and tracks progress.
+- **Why:** This is the "boss mode" demo. Most enterprises have multi-repo architectures. Showing Copilot orchestrate cross-repo feature development from a single issue is a powerful capstone.
+- **Setup:** The [`octocat-supply-platform`](https://github.com/dbruun/octocat-supply-platform) repo contains three skills that work together.
+
+### Talk Track — Multi-Repo Orchestration
+
+The OctoCAT Supply application is split across multiple repos in a real-world pattern:
+
+| Repo | Purpose |
+|------|---------|
+| **octocat-supply-platform** | Master orchestrator — architecture docs, infra, and agent skills |
+| **octocat-supply-web** | React + Vite + Tailwind frontend |
+| **octocat-supply-api** | REST API backend |
+
+The platform repo contains **three Copilot Agent Skills** that let the Coding Agent coordinate work across all three repos from a single issue:
+
+| Skill | What It Does |
+|-------|-------------|
+| **multi-repo-orchestration** | Reads a feature request issue, determines which repos are affected, creates child issues in each repo with full context, and assigns Copilot to implement them |
+| **cross-repo-pr-linking** | When PRs are created in child repos, updates the master issue with a tracking table showing PR status across all repos |
+| **architecture-context** | Fetches architecture docs, entity models, and API contracts from the platform repo and embeds them in spawned issues so child-repo agents have full context |
+
+**The flow:**
+
+1. You create an issue in the **platform** repo describing a cross-cutting feature (e.g., "Add delivery tracking with real-time status updates")
+2. Copilot's **multi-repo-orchestration** skill analyzes the feature, determines it needs API routes AND frontend components
+3. It creates a child issue in **octocat-supply-api** with API-specific requirements (routes, models, migrations) and a child issue in **octocat-supply-web** with frontend-specific requirements (components, pages, API integration)
+4. Each child issue includes **architecture context** pulled from the platform repo — entity models, API contracts, component specs
+5. Copilot assigns itself to each child issue and begins working autonomously in parallel
+6. The **cross-repo-pr-linking** skill tracks progress back on the master issue with a status table
+
+**Prerequisites — GitHub MCP Server on all repos:**
+
+Each repo in the ecosystem needs the GitHub MCP Server configured so the Coding Agent can create issues and assign itself across repos:
+
+1. Go to **Settings → Copilot → Coding agent → MCP configuration** in each repo
+2. Add the GitHub MCP server with `issues` in the toolsets
+3. Add a GitHub PAT as `COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN` in each repo's Copilot environment secrets
+
+### How
+
+1. Navigate to the [octocat-supply-platform](https://github.com/dbruun/octocat-supply-platform) repo on GitHub.
+2. Show the skills in `.github/skills/`:
+   - `multi-repo-orchestration/SKILL.md` — the orchestration logic with issue templates
+   - `cross-repo-pr-linking/SKILL.md` — the PR tracking logic
+   - `architecture-context/SKILL.md` — the context provider
+3. **Create a new issue** in the platform repo:
+
+   ```
+   Title: Add batch order import feature
+   
+   Body:
+   We need the ability to import orders in bulk from a CSV file.
+   
+   Requirements:
+   - API endpoint to accept CSV upload and parse order data
+   - Frontend page with drag-and-drop CSV upload and preview table
+   - Validation for required fields (supplier, product, quantity)
+   - Error reporting for invalid rows
+   ```
+
+4. **Assign Copilot** to the issue (assign the `copilot` user).
+5. Watch the orchestration happen:
+   - Copilot reads the issue and invokes the **multi-repo-orchestration** skill
+   - It determines both the API and web repos are affected
+   - It creates a child issue in **octocat-supply-api** with API-specific tasks (Express route, CSV parser, validation)
+   - It creates a child issue in **octocat-supply-web** with frontend-specific tasks (upload component, preview table, error display)
+   - Each child issue includes architecture context and entity model details
+   - Copilot assigns itself to both child issues
+6. **Show the master issue** — it now has a tracking comment with a table of spawned issues and recommended integration order.
+7. **Wait for PRs** — Copilot works on both repos in parallel. As PRs are created, the cross-repo-pr-linking skill updates the master issue with status.
+8. **Show the result** — PRs in two different repos, all traced back to a single feature request.
+
+> **Key Takeaway:** Copilot Agent Skills can orchestrate multi-repo feature development from a single issue. One feature request becomes coordinated work across an entire platform — with full context, tracking, and autonomous implementation.
