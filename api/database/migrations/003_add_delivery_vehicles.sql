@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS delivery_vehicles (
     vehicle_id INTEGER PRIMARY KEY AUTOINCREMENT,
     branch_id INTEGER NOT NULL,
     vehicle_type TEXT NOT NULL,
-    capacity REAL NOT NULL,
-    status TEXT NOT NULL DEFAULT 'available',
+    capacity REAL NOT NULL CHECK (capacity > 0),
+    status TEXT NOT NULL DEFAULT 'available' CHECK (status IN ('available', 'in-transit', 'maintenance')),
     FOREIGN KEY (branch_id) REFERENCES branches(branch_id) ON DELETE CASCADE
 );
 
