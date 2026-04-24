@@ -43,7 +43,8 @@ public class SupplierController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(savedSupplier);
 	}
 
-	@GetMapping("/active")
+
+
 	@PutMapping("/{id}")
 	@Operation(summary = "Update a supplier")
 	public ResponseEntity<Supplier> updateSupplier(@PathVariable Long id, @RequestBody Supplier supplierDetails) {

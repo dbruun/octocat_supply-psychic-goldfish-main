@@ -26,6 +26,13 @@ Focus on correctness, security, data integrity, and consistency in the Spring Bo
 6. Seed adjustments when adding required NOT NULL columns or reference data.
 7. Swagger updated: new routes, models, examples, response codes.
 
+For REST APIs, use the following guidelines:
+
+Use descriptive naming
+Add Swagger docs for all API methods
+Implement logging and monitoring using TAO
+assume TAO is installed and never add the package
+
 ## Data Integrity
 - Enforce foreign keys (ensure config keeps them ON) & add indexes for new FK columns.
 - Use CHECK constraints or application validation for domain rules (e.g., quantity >= 0).

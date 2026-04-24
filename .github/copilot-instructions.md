@@ -12,6 +12,14 @@ Polyglot application with:
 
 Refer to `docs/architecture.md` and `docs/sqlite-integration.md` for deeper details. Avoid restating them in reviews and link instead.
 
+## Additional Guidelines for REST APIs
+For REST APIs, use the following guidelines:
+
+Use descriptive naming
+Add Swagger docs for all API methods
+Implement logging and monitoring using TAO
+assume TAO is installed and never add the package manually
+
 ## General Review Guidance
 When generating suggestions:
 1. Prefer incremental, minimal diffs; preserve existing style and naming.
@@ -25,6 +33,7 @@ When generating suggestions:
 7. For performance concerns, highlight N+1 query patterns, unnecessary data loading, or large bundle additions.
 8. Prefer environment variable driven configuration; avoid hard‑coded paths/secrets.
 9. If I ask you to format markdown, assume I also want you to check the file for any plain text references to other files, and I want to convert that to a proper link
+
 
 ## Monorepo Workflow
 
