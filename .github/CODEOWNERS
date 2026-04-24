@@ -1,0 +1,35 @@
+# OctoCAT Supply — Code Owners
+#
+# These owners are automatically requested for review on PRs that modify
+# matching paths. Combined with repository rulesets requiring 2 approvals
+# and code owner review, this ensures the right people review every change.
+
+# Backend API — controllers, models, repositories, services
+/api/                           @backend-team
+
+# Database — migrations and seed data
+/database/                      @backend-team
+
+# Frontend — React components, pages, styles, config
+/frontend/                      @frontend-team
+
+# Infrastructure — Bicep, Docker, deployment
+/infra/                         @devops-team
+/docker-compose.yml             @devops-team
+
+# CI/CD Workflows
+/.github/workflows/             @devops-team
+
+# AI Configuration — instructions, skills, prompts
+# Requires tech lead review to prevent unintended changes to AI behavior
+/.github/copilot-instructions.md  @tech-leads
+/.github/instructions/            @tech-leads
+/.github/skills/                  @tech-leads
+/.github/prompts/                 @tech-leads
+/.github/agents/                  @tech-leads
+
+# Documentation
+/docs/                          @tech-leads @backend-team
+
+# Demo materials
+/demo/                          @tech-leads

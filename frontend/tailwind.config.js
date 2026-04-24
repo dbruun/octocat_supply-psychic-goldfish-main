@@ -22,6 +22,34 @@ export default {
           800: '#262626',
           900: '#171717',
         },
+        // ImageTrend Design System tokens
+        'it-blue': {
+          400: '#3B82F6',
+          500: '#2563EB',
+          600: '#1E40AF',
+        },
+        'it-gray': {
+          50: '#F9FAFB',
+          100: '#F3F4F6',
+          200: '#E5E7EB',
+          400: '#9CA3AF',
+          500: '#6B7280',
+          700: '#374151',
+        },
+        'it-amber': {
+          500: '#F59E0B',
+        },
+        'it-green': {
+          600: '#16A34A',
+        },
+        'it-red': {
+          500: '#EF4444',
+          600: '#DC2626',
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

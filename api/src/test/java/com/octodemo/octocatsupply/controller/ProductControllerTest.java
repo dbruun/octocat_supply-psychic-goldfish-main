@@ -28,8 +28,8 @@ class ProductControllerTest {
 
 	@Test
 	void shouldReturnAllProducts() {
-		Product product1 = new Product(1L, 1L, "Product 1", "Description 1", 99.99, 0, "SKU-001", "piece", "img1.png", 0.0);
-		Product product2 = new Product(2L, 1L, "Product 2", "Description 2", 149.99, 0, "SKU-002", "piece", "img2.png", 0.1);
+		Product product1 = new Product(1L, 1L, "Product 1", "Description 1", 99.99, "SKU-001", "piece", "img1.png", 0.0);
+		Product product2 = new Product(2L, 1L, "Product 2", "Description 2", 149.99, "SKU-002", "piece", "img2.png", 0.1);
 
 		when(productRepository.findAll()).thenReturn(Arrays.asList(product1, product2));
 

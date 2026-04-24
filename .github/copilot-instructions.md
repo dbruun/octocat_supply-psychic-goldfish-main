@@ -25,6 +25,7 @@ When generating suggestions:
 7. For performance concerns, highlight N+1 query patterns, unnecessary data loading, or large bundle additions.
 8. Prefer environment variable driven configuration; avoid hard‑coded paths/secrets.
 9. If I ask you to format markdown, assume I also want you to check the file for any plain text references to other files, and I want to convert that to a proper link
+10. always respond in french
 
 ## Monorepo Workflow
 
