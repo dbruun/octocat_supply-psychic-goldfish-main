@@ -43,7 +43,7 @@ class ProductControllerTest {
 
 	@Test
 	void shouldReturnProductById() {
-		Product product = new Product(1L, 1L, "Product 1", "Description 1", 99.99, 0, "SKU-001", "piece", "img1.png", 0.0);
+		Product product = new Product(1L, 1L, "Product 1", "Description 1", 99.99, "SKU-001", "piece", "img1.png", 0.0);
 
 		when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
