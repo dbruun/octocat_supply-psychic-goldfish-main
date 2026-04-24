@@ -126,19 +126,26 @@ jobs:
     steps:
       - name: Trigger deployment workflow
         uses: actions/github-script@v8
+        env:
+          API_IMAGE: ${{ needs.build_api.outputs.image }}
+          API_DIGEST: ${{ needs.build_api.outputs.digest }}
+          API_NAME: ${{ needs.build_api.outputs.name }}
+          FRONTEND_IMAGE: ${{ needs.build_frontend.outputs.image }}
+          FRONTEND_DIGEST: ${{ needs.build_frontend.outputs.digest }}
+          FRONTEND_NAME: ${{ needs.build_frontend.outputs.name }}
         with:
           script: |
-            github.rest.actions.createWorkflowDispatch({
+            await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: 'deploy.yml',
               ref: 'main',
               inputs: {
-                'api_image': '${{ needs.build_api.outputs.image }}',
-                'api_digest': '${{ needs.build_api.outputs.digest }}',
-                'api_name': '${{ needs.build_api.outputs.name }}',
-                'frontend_image': '${{ needs.build_frontend.outputs.image }}',
-                'frontend_digest': '${{ needs.build_frontend.outputs.digest }}',
-                'frontend_name': '${{ needs.build_frontend.outputs.name }}'
+                'api_image': process.env.API_IMAGE,
+                'api_digest': process.env.API_DIGEST,
+                'api_name': process.env.API_NAME,
+                'frontend_image': process.env.FRONTEND_IMAGE,
+                'frontend_digest': process.env.FRONTEND_DIGEST,
+                'frontend_name': process.env.FRONTEND_NAME
               }
             });
