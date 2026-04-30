@@ -1,14 +1,14 @@
 ---
-description: "ImageTrend design system tokens and component patterns for frontend code."
+description: "Agency design system tokens and component patterns for frontend code."
 applyTo: "frontend/src/**"
 ---
-# ImageTrend Design System
+# Agency Design System
 
 Apply these design tokens and patterns when generating or modifying frontend components.
 
 ## Color Palette
 
-Use ImageTrend brand colors via Tailwind custom classes. Never use raw hex values in JSX — always use the Tailwind class names defined in `tailwind.config.js`.
+Use Agency brand colors via Tailwind custom classes. Never use raw hex values in JSX — always use the Tailwind class names defined in `tailwind.config.js`.
 
 | Token | Tailwind Class | Hex | Usage |
 |-------|---------------|-----|-------|
@@ -108,4 +108,4 @@ const statusColors = {
 
 - Dark mode is enabled via the `dark` class on `<html>`.
 - Use dark mode variants: `dark:bg-gray-900`, `dark:text-gray-100`, `dark:border-gray-700`.
-- Ensure all ImageTrend colors have sufficient contrast in both light and dark modes.
+- Ensure all Agency colors have sufficient contrast in both light and dark modes.
