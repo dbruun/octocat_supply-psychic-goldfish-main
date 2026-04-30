@@ -41,7 +41,7 @@ env:
   REGISTRY_URL: "https://ghcr.io/${{ github.repository_owner }}"
   ARTIFACT_URL: "https://github.com/${{ github.repository }}/pkgs/container"
   CONTAINER_APP_ENVIRONMENT_NAME: octocat-supply-cae
-  CONTAINER_APP_ENVIRONMENT_ID: /subscriptions/408de6dc-726d-4e63-87d3-ef5bbbb30d9e/resourceGroups/dotcom--msft-common-demos--octocat-supply-resources/providers/Microsoft.App/managedEnvironments/octocat-supply-cae
+  CONTAINER_APP_ENVIRONMENT_ID: /subscriptions/<your-subscription-id>/resourceGroups/<your-resource-group>/providers/Microsoft.App/managedEnvironments/octocat-supply-cae
 
 
 jobs:

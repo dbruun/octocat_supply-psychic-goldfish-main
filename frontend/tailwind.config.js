@@ -22,7 +22,7 @@ export default {
           800: '#262626',
           900: '#171717',
         },
-        // ImageTrend Design System tokens
+        // Agency Design System tokens
         'it-blue': {
           400: '#3B82F6',
           500: '#2563EB',
