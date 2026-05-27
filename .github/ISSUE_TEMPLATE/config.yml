@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://github.com/octodemo/octocat_supply-psychic-goldfish/wiki
+    about: Check the project wiki for documentation and guides.
