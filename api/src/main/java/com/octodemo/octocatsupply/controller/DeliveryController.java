@@ -80,4 +80,10 @@ public class DeliveryController {
 		deliveryRepository.delete(delivery);
 		return ResponseEntity.noContent().build();
 	}
+
+	@GetMapping("/count")
+	@Operation(summary = "Get total delivery count")
+	public ResponseEntity<Long> getDeliveryCount() {
+		return ResponseEntity.ok(deliveryRepository.count());
+	}
 }
