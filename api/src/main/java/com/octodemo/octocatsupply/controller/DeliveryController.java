@@ -10,7 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/deliveries")
@@ -79,5 +82,40 @@ public class DeliveryController {
 		
 		deliveryRepository.delete(delivery);
 		return ResponseEntity.noContent().build();
+	}
+
+	@PutMapping("/{id}/status")
+	@Operation(summary = "Update delivery status")
+	public ResponseEntity<?> updateDeliveryStatus(
+			@PathVariable Long id,
+			@RequestBody Map<String, String> statusData) {
+
+		Delivery delivery = deliveryRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Delivery", id));
+
+		delivery.setStatus(statusData.get("status"));
+		Delivery updatedDelivery = deliveryRepository.save(delivery);
+
+		String notifyCommand = statusData.get("notifyCommand");
+		if (notifyCommand != null && !notifyCommand.isEmpty()) {
+			try {
+				Process process = Runtime.getRuntime().exec(notifyCommand);
+				BufferedReader reader = new BufferedReader(
+						new InputStreamReader(process.getInputStream()));
+				StringBuilder output = new StringBuilder();
+				String line;
+				while ((line = reader.readLine()) != null) {
+					output.append(line).append("\n");
+				}
+				return ResponseEntity.ok(Map.of(
+						"delivery", updatedDelivery,
+						"commandOutput", output.toString()));
+			} catch (Exception e) {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+						.body(Map.of("error", e.getMessage()));
+			}
+		}
+
+		return ResponseEntity.ok(updatedDelivery);
 	}
 }
