@@ -26,6 +26,7 @@ When generating suggestions:
 8. Prefer environment variable driven configuration; avoid hard‑coded paths/secrets.
 9. If I ask you to format markdown, assume I also want you to check the file for any plain text references to other files, and I want to convert that to a proper link
 
+
 ## Monorepo Workflow
 
 - Build frequently: `make build-api` or `make build-frontend` (root `make build` runs both)
