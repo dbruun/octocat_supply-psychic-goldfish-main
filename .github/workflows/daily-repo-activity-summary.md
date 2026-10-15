@@ -12,7 +12,11 @@ safe-outputs:
   create-issue:
     title-prefix: "[daily activity] "
     max: 1
-network: {}
+network:
+  firewall:
+    # Fix Copilot CLI auth prechecks without disabling credential isolation.
+    # gh-aw v0.64.2 requires matching AWF versions in the lock file's detection job too.
+    version: v0.25.46
 tools:
   github:
     toolsets: [repos, issues, pull_requests, search, context]
